@@ -1,37 +1,146 @@
+<script>
+// @ts-nocheck
+
+  let previous = "";
+  export let input = "";
+  let operatorClick = true;
+  let decimalClick = true;
+  let initial = true;
+
+  async function compute() {
+    const response = await fetch("/compute");
+    let result = await response.json();
+    input = result;
+  }
+
+  function buttonPress(button) {
+    if (initial) {
+      if (button.match(/[0-9]/)) {
+        input += button;
+        initial = false;
+        operatorClick = false;
+        decimalClick = false;
+        console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+      }
+    } else {
+      if (button.match(/[0-9]/)) {
+        input += button;
+        operatorClick = false;
+        console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+      } else {
+        if (!operatorClick && button.match(/[+\-*/]/)) {
+          input += button;
+          operatorClick = true;
+          decimalClick = false;
+          console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+        }
+        if (!operatorClick && !decimalClick && button.match(/\./)) {
+          input += button;
+          operatorClick = true;
+          decimalClick = true;
+          console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+        }
+        if (button.match("clear")) {
+          input = "";
+          previous = "";
+        }
+
+      }
+    }
+  }
+
+  function onKeyDown(e) {
+    if (initial) {
+      if (e.key.match(/[0-9]/) && !(e.keyCode >= 112 && e.keyCode <= 123)) {
+        console.log(e.keyCode);
+        input += e.key;
+        initial = false;
+        operatorClick = false;
+        decimalClick = false;
+        console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+      }
+    } else {
+      if (e.key.match(/[0-9]/) && !(e.keyCode >= 112 && e.keyCode <= 123)) {
+        console.log(e.keyCode);
+        input += e.key;
+        operatorClick = false;
+        console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+      } else {
+        if (!operatorClick && e.key.match(/[+\-*/]/)) {
+          input += e.key;
+          operatorClick = true;
+          decimalClick = false;
+          console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);
+        }
+        if (!operatorClick && !decimalClick && e.key.match(/\./)) {
+          !decimalClick
+          input += e.key;
+          operatorClick = true;
+          decimalClick = true;
+          console.log("oc = " + operatorClick + " ||| "  + "dc = " + decimalClick);     
+        }
+        if (e.keyCode == 8) {
+          input = input.slice(0,-1);
+        }
+      }
+    }
+
+	}
+</script>
+
+
 <div class="baseContainer">
   <div class="container">
     
     <div class="textArea">
-      <p class="previous">previous</p>
-      <p class="total">Testing</p>
+      <p class="previous">{previous}</p>
+      <p class="total">{input}</p>
     </div>
 
+    <input autocomplete="off" name="expression" value={input} hidden>
     <div class="buttonArea">
-      <button class="acButton">AC</button>
-      <button class="operation">&divide;</button>
+      <button type="button" class="acButton" on:click={() => buttonPress("clear")}>AC</button>
+      <button type="button" class="operation" on:click={() => buttonPress("/")}>&divide;</button>
   
-      <button class=number>7</button>
-      <button class=number>8</button>
-      <button class=number>9</button>
-      <button class="operation">&times;</button>
+      <button type="button" class=number on:click={() => buttonPress("7")}>7</button>
+      <button type="button" class=number on:click={() => buttonPress("8")}>8</button>
+      <button type="button" class=number on:click={() => buttonPress("9")}>9</button>
+      <button type="button" class="operation" on:click={() => buttonPress("*")}>&times;</button>
   
-      <button class=number>4</button>
-      <button class=number>5</button>
-      <button class=number>6</button>
-      <button class="operation">&minus;</button>
+      <button type="button" class=number on:click={() => buttonPress("4")}>4</button>
+      <button type="button" class=number on:click={() => buttonPress("5")}>5</button>
+      <button type="button" class=number on:click={() => buttonPress("6")}>6</button>
+      <button type="button" class="operation" on:click={() => buttonPress("-")}>&minus;</button>
   
-      <button class=number>1</button>
-      <button class=number>2</button>
-      <button class=number>3</button>
-      <button class="operation">&plus;</button>
+      <button type="button" class=number on:click={() => buttonPress("1")}>1</button>
+      <button type="button" class=number on:click={() => buttonPress("2")}>2</button>
+      <button type="button" class=number on:click={() => buttonPress("3")}>3</button>
+      <button type="button" class="operation" on:click={() => buttonPress("+")}>&plus;</button>
   
-      <button></button>
-      <button class=number>0</button>
-      <button class=number>.</button>
-      <button class="operation">&equals;</button>
+      <button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
+        <path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"/>
+        <path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z"/>
+      </svg></button>
+      <button type="button" class=number on:click={() => buttonPress("0")}>0</button>
+      <button type="button" class=number on:click={() => buttonPress(".")}>.</button>
+      <button type="submit" class="operation" on:click={async (e) => {
+        const response = await fetch('/compute', {
+          method: 'POST',
+          body: JSON.stringify({ input }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        previous = input + "=";
+        input = "";
+        console.log(compute());
+      }}>&equals;</button>
     </div>
+    
   </div>
 </div>
+
+<svelte:window on:keydown={onKeyDown} />
 
 
 <style>
@@ -51,6 +160,10 @@
     font-family: 'Poppins', sans-serif;
   }
 
+  .bi-backspace {
+    margin-top: 10px;
+  }
+
   .baseContainer {
     display: flex;
     justify-content: center;
@@ -68,6 +181,20 @@
     position: relative;
     overflow: hidden;
     white-space: nowrap;  
+  }
+
+  .textArea:before {
+    content: '';
+    display: block;
+    background: linear-gradient(90deg,#ffffff 0%, rgba(255,255,255,0.8) 80%);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -50px;
+    right: calc(320px + 96px + 20px);
+    z-index: 1;
+    box-shadow: 20px 0 30px 50px white;
+
   }
 
   .textArea .total {
