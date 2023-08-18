@@ -48,20 +48,20 @@ function onKeyDown(e)... //The e parameter contains the event. I get the key pre
 
 ```javascript
 <button
-				type="submit"
-				class="operation equals"
-				on:click={async (e) => {
-					const response = await fetch('/compute', {
-						method: 'POST',
-						body: JSON.stringify({ input }),
-						headers: {
-							'Content-Type': 'application/json'
-						}
-					});
-					previous = input + '=';
-					input = '';
-					compute();
-				}}>&equals;</button>
+    type="submit"
+    class="operation equals"
+    on:click={async (e) => {
+      const response = await fetch('/compute', {
+        method: 'POST',
+        body: JSON.stringify({ input }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      previous = input + '=';
+      input = '';
+      compute();
+    }}>&equals;</button>
 ```
 
 ## Backend
